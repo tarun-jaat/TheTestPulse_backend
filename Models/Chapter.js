@@ -7,7 +7,7 @@ const ChapterSchema = new mongoose.Schema({
       required: true,
     },
     chapterDescription: {
-      type: String,
+      type: String, 
     //   required: true,
     },
     topics: [

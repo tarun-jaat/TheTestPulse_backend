@@ -224,6 +224,51 @@ exports.addQuestion = async (req, res) => {
   }
 };
 
+exports.addQuestionASPicture = async (req, res) => {
+  try {
+    const file = req.file;
+    const questionText = req.file.location;
+    const { topicId, correctAnswer } = req.body;
+    let options = ["A", "B", "C", "D"];
+    if (!file) {
+      return res.status(400).json({
+        success: false,
+        message: "Please upload a file",
+      });
+    }
+
+    const quiz = await Topic.findById(topicId);
+    if (!quiz) {
+      return res.status(404).json({
+        success: false,
+        message: "topic not found",
+      });
+    }
+    const newQuestion = await Question.create({
+      questionText: questionText,
+      options: options,
+      answer: correctAnswer,
+    });
+    // Add the question to the quiz
+    await Topic.findByIdAndUpdate(topicId, {
+      $push: { questions: newQuestion._id },
+    });
+    // Send success response
+    res.status(200).json({
+      success: true,
+      message: "Question added successfully",
+      data: newQuestion,
+    });
+  } catch (error) {
+    console.error("Error in addQuestion:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
 exports.getQuestionBankData = async (req, res) => {
   try {
     const questionBankId = req.params.questionBankId;

@@ -3,6 +3,8 @@ const app=express()
 
 
 const cors=require("cors")
+
+const userRoutes=require('./Routes/UserRoutes')
 const database =require("./Config/DataBaseConnection")
 
 
@@ -31,6 +33,8 @@ app.use(
 
 
   app.use('/api/v1/questionbank',questionBank)
+  app.use("/api/v1/auth", userRoutes);
+
 
 
   app.get("/", (req, res) => {
